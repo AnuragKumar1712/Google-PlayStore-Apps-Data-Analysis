@@ -1,126 +1,150 @@
-Google Play Store App Analytics & Rating Prediction
+# 📱 Google Play Store App Analytics & Rating Prediction
 
-📌 Project Overview
+*A Complete End-to-End Data Science Project*
 
-This project analyzes the Google Play Store dataset to uncover key factors that drive app success. It involves an end-to-end data science workflow, including data cleaning, exploratory data analysis (EDA), feature engineering, machine learning for rating prediction, and customer sentiment analysis.
+This project analyzes the **Google Play Store dataset** to identify key factors that influence app success and to **predict app ratings** using machine learning. It covers the full data science pipeline—data cleaning, EDA, feature engineering, model building, and sentiment analysis of user reviews.
 
-The goal is to provide actionable insights for developers and businesses to improve their app performance and user satisfaction.
+The insights generated can help app developers, product managers, and businesses make **data-driven decisions** to improve app quality and user satisfaction.
 
-📂 Datasets
+---
 
-The project uses two datasets (originally from Kaggle):
+## 📂 Datasets Used
 
-googleplaystore.csv: Contains details of ~10,000 apps (Category, Rating, Size, Installs, Price, Content Rating, etc.).
+**1. `googleplaystore.csv`**
+Contains metadata for ~10,000 apps including:
 
-googleplaystore_user_reviews.csv: Contains 100 top reviews for each app with sentiment pre-processed (Positive, Negative, Neutral).
+* Category, Rating, Size
+* Installs, Price, Type
+* Content Rating, Reviews
+* Last Updated, Android Version, etc.
 
-🛠️ Technologies Used
+**2. `googleplaystore_user_reviews.csv`**
+Contains 100 pre-processed (Positive/Negative/Neutral) reviews per app.
 
-Python: Core programming language.
+---
 
-Pandas & NumPy: Data manipulation and cleaning.
+## 🛠 Technologies & Libraries
 
-Matplotlib & Seaborn: Data visualization.
+* **Python** – Core language
+* **Pandas, NumPy** – Data cleaning & transformation
+* **Matplotlib, Seaborn** – Visualization
+* **Scikit-Learn** – Machine learning (Random Forest), preprocessing
 
-Scikit-Learn: Machine learning (Random Forest Regressor) and preprocessing.
+---
 
-⚙️ Project Workflow
+## ⚙️ Project Workflow (Step-by-Step)
 
-The project was executed in 8 distinct steps:
+### **1. Data Loading & Initial Inspection**
 
-1. Data Loading & Inspection
+* Loaded both datasets
+* Checked shape, datatypes, missing values, duplicates
+* Identified corrupted entries
 
-Loaded datasets and performed initial health checks (data types, missing values, duplicates).
+### **2. Data Cleaning**
 
-2. Data Cleaning
+* Fixed data types for:
 
-Fixed Data Types: Converted "Installs" (10,000+ -> 10000), "Price" ($4.99 -> 4.99), and "Size" (19M -> 19.0).
+  * **Installs** (`10,000+` → `10000`)
+  * **Price** (`$4.99` → `4.99`)
+  * **Size** (`19M` → `19.0 MB`)
+* Standardized all sizes to **Megabytes**
+* Removed known corrupted row (`index 10472`)
+* Cleaned non-numeric characters
 
-Error Handling: Removed a known "shifted" row (index 10472) where data was corrupted.
+### **3. Missing Value Treatment**
 
-Standardization: Converted all sizes to Megabytes.
+* Imputed missing **Ratings** using **median per Category**
+* Dropped rows with critical missing fields:
+  *Android Ver*, *Current Ver*
 
-3. Missing Value Treatment
+### **4. Exploratory Data Analysis (EDA)**
 
-Imputation: Filled missing Ratings using the Median Rating of the app's specific Category.
+Key insights:
 
-Cleaning: Dropped rows with critical missing metadata (Android Ver, Current Ver).
+* **Most common categories:** Family, Game, Tools
+* **Rating distribution:** Mostly 4.0–4.5
+* **Pricing:** ~90% apps are free
+* Visualized distributions, correlations, counts, and install patterns
 
-4. Exploratory Data Analysis (EDA)
+### **5. Feature Engineering**
 
-Category Popularity: "Family", "Game", and "Tools" are the most dominant categories.
+Created additional predictive features:
 
-Rating Distribution: Skewed towards high ratings (most apps are rated 4.0 - 4.5).
+* **Revenue Estimate** = Price × Installs
+* **Size_Group** = Small / Medium / Large
+* **Year_Updated** = Extracted from Last Updated
+* **Review_Ratio** = Reviews ÷ Installs
 
-Pricing: ~90% of apps are Free.
+### **6. ML Preprocessing**
 
-5. Feature Engineering
+* Encoding:
 
-Created new features to improve model performance:
+  * Binary: `Type (Free=0, Paid=1)`
+  * Ordinal: `Content Rating`, `Size_Group`
+  * One-Hot: `Category`
+* Train-test split: **80% Train, 20% Test**
 
-Revenue: Estimated revenue (Price * Installs).
+### **7. Rating Prediction Model**
 
-Size_Group: Bucketed apps into 'Small', 'Medium', and 'Large'.
+Model Used: **Random Forest Regressor**
 
-Year_Updated: Extracted from the Last Updated timestamp.
+**Performance:**
 
-Review_Ratio: Engagement metric (Reviews / Installs).
+* **MAE ≈ 0.35 stars** (model predicts ratings within ~0.35 of actual)
+* **Important features:** Reviews, Size, Category, Year Updated
 
-6. Pre-processing for ML
+### **8. Sentiment Analysis (User Reviews)**
 
-Encoding:
+* Analyzed sentiment polarity (Positive/Negative/Neutral)
+* Findings:
 
-Binary: Type (Free=0, Paid=1).
+  * **Health & Fitness** apps see the most positive sentiments
+  * **Game** apps show highly variable sentiment (bugs, ads, crashes)
+  * Neutral reviews mostly contain objective suggestions
 
-Ordinal: Content Rating, Size_Group.
+---
 
-One-Hot: Category (converted to binary columns).
+## 📊 Key Insights & Findings
 
-Split: Divided data into 80% Training and 20% Testing sets.
+* **Free vs Paid:**
+  Paid apps have lower installs but stronger user engagement.
 
-7. Machine Learning Model (Random Forest)
+* **Frequent Updates Improve Ratings:**
+  Apps updated more recently (especially 2018) tend to have higher ratings.
 
-Trained a Random Forest Regressor to predict App Ratings.
+* **Optimal App Size Matters:**
+  Moderate-sized, well-optimized apps outperform extremely heavy ones.
 
-Performance Metrics:
+* **User Sentiment Trends:**
+  Negative reviews are highly emotional; neutral reviews focus on feature requests.
 
-MAE (Mean Absolute Error): ~0.35 stars (The model's prediction is usually within 0.35 stars of the actual rating).
+---
 
-Feature Importance: Identified that Reviews, Size, and Category are strong predictors of an app's rating.
+## ▶ How to Run
 
-8. Customer Sentiment Analysis
+1. Clone the repository
+2. Install dependencies:
 
-Analyzed user reviews to understand subjectivity and polarity.
+   ```bash
+   pip install pandas numpy matplotlib seaborn scikit-learn
+   ```
+3. Place both datasets in the project folder:
 
-Found that Health & Fitness apps generally have the highest positive sentiment, while Game apps show high variability (likely due to bugs or ads).
+   * `googleplaystore.csv`
+   * `googleplaystore_user_reviews.csv`
+4. Run the notebook or Python script:
 
-📊 Key Findings
+   ```bash
+   jupyter notebook
+   ```
 
-Paid vs. Free: Paid apps tend to have slightly fewer installs but higher engagement from loyal users.
+---
 
-Updates Matter: Apps updated in the last year (2018) correlate with higher ratings.
+## 🚀 Future Improvements
 
-Size Impact: "Varies with device" and optimized (Medium) sizes perform better than massive, unoptimized apps.
+* Implement **NLP topic modeling** to automatically classify complaint types (UI issues, bugs, ads, performance).
+* Experiment with advanced models: **XGBoost**, **LightGBM**, **CatBoost**.
+* Deploy an **interactive Streamlit dashboard** to explore insights dynamically.
+* Build a **real-time app rating prediction API**.
 
-Sentiment: Neutral reviews are usually objective (feature requests), while extremely negative reviews are highly subjective (emotional complaints).
-
-🚀 How to Run
-
-Clone this repository.
-
-Install dependencies:
-
-pip install pandas numpy matplotlib seaborn scikit-learn
-
-
-Place googleplaystore.csv and googleplaystore_user_reviews.csv in the root directory.
-
-Run the analysis script (e.g., in Jupyter Notebook or Python).
-
-🔮 Future Work
-
-Implement NLP (Natural Language Processing) on raw review text to categorize complaints (e.g., "bugs", "ads", "UI").
-
-Test XGBoost or LightGBM models to potentially improve prediction accuracy.
-
-Build a dashboard (using Streamlit) to interactively explore the data.
+---
